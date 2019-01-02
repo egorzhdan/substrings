@@ -3,15 +3,24 @@
 
 #include <QThread>
 #include <QtGui>
+#include <QMainWindow>
 
 class Watcher : public QThread {
 Q_OBJECT
 
 public:
-    Watcher(QObject *parent);
+    Watcher(QDir root, QMainWindow *parent);
 
 private:
-    QFileSystemWatcher watcher;
+    QDir root;
+    QFileSystemWatcher *watcher = nullptr;
+
+    void updateRoots();
+    void reindex(const QString& path);
+
+private slots:
+    void directoryChanged(const QString &path);
+    void fileChanged(const QString &path);
 };
 
 #endif //WATCHER_H

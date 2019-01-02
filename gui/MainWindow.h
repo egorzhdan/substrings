@@ -7,8 +7,9 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QTableWidget>
-#include <core/Searcher.h>
+#include "core/Searcher.h"
 #include "core/Indexer.h"
+#include "core/Watcher.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -27,8 +28,12 @@ public slots:
     void matchDoubleClicked(int col, int row);
 
 private:
+    friend class Watcher;
+
+    QDir root;
     Indexer *indexer = nullptr;
     Searcher *searcher = nullptr;
+    Watcher *watcher = nullptr;
 
     QPushButton *openDialogButton;
     QLabel *statusLabel;

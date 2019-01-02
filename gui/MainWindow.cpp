@@ -36,7 +36,9 @@ MainWindow::MainWindow() : QMainWindow() {
 void MainWindow::openDialogClicked() {
     auto rootPath = QFileDialog::getExistingDirectory(this);
     openDialogButton->setEnabled(false);
-    indexer = new Indexer(this, QDir(rootPath));
+    root = QDir(rootPath);
+    watcher = new Watcher(root, this);
+    indexer = new Indexer(this, root);
     connect(indexer, SIGNAL(statusUpdated(QString, bool)), this, SLOT(indexerStatusUpdated(QString, bool)));
     indexer->start();
 }
@@ -67,8 +69,8 @@ void MainWindow::searcherStatusUpdated(QString status) {
 }
 
 void MainWindow::matchFound(QString filePath) {
-//    statusLabel->setText(QString::number(count) + " files found");
-    auto rootPath = indexer->rootPath();
+//    statusLabel->setText(QString::number(count) + " fidles found");
+    auto rootPath = root.path();
     auto shortPath = (filePath.startsWith(rootPath) ? filePath.remove(0, rootPath.size() + 1) : rootPath);
 
     int count = filesView->rowCount();
@@ -79,12 +81,18 @@ void MainWindow::matchFound(QString filePath) {
 }
 
 void MainWindow::matchDoubleClicked(int row, int col) {
-    auto path = QDir(indexer->rootPath()).absoluteFilePath(filesView->item(row, col)->text());
+    auto path = root.absoluteFilePath(filesView->item(row, col)->text());
     auto x = path.toStdString();
     QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }
 
 MainWindow::~MainWindow() {
+    if (watcher) {
+        if (watcher->isRunning()) {
+            watcher->requestInterruption();
+            watcher->wait();
+        }
+    }
     if (indexer) {
         if (indexer->isRunning()) {
             indexer->cancel();
