@@ -12,9 +12,11 @@ Q_OBJECT
 public:
     Indexer(QObject *parent, QDir root);
     QString rootPath();
+    void setRootPath(QString path);
     void cancel();
     void wait();
     Index waitForIndex();
+    Index indexNonBlocking();
 
 signals:
     void statusUpdated(QString status, bool busy = true);

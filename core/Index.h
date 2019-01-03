@@ -13,6 +13,7 @@ public:
 
     Index();
     Index(const Index& other);
+    Index& operator=(const Index& other);
 
     void insert(const QString& filePath, const Index::FileHash &fileHash);
     FileHash get(const QString& filePath) const;

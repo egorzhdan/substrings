@@ -7,7 +7,7 @@ Watcher::Watcher(QDir root, QMainWindow *parent) : QThread(dynamic_cast<QObject 
 }
 
 void Watcher::updateRoots() {
-    auto it = QDirIterator(root.path(), QDir::Files, QDirIterator::Subdirectories);
+    auto it = QDirIterator(root.path(), QDirIterator::Subdirectories);
     auto pathList = QStringList();
     while (it.hasNext()) {
         auto path = it.next();
@@ -28,17 +28,18 @@ void Watcher::reindex(const QString &path) {
     } else {
         currentRoot = fileInfo.dir();
     }
-    delete par->indexer;
-    par->indexer = new Indexer(par, currentRoot);
+    par->indexer->waitForIndex();
     par->indexer->start();
 }
 
 void Watcher::directoryChanged(const QString &path) {
     qDebug() << "Watcher: dir changed: " << path;
     reindex(path);
+    updateRoots();
 }
 
 void Watcher::fileChanged(const QString &path) {
     qDebug() << "Watcher: file changed: " << path;
     reindex(path);
+    updateRoots();
 }

@@ -13,6 +13,8 @@ QString Indexer::rootPath() {
 
 void Indexer::run() {
     emit statusUpdated("Indexing...");
+    count = 0;
+    index = Index();
 
     auto it = QDirIterator(root.path(), QDir::Files, QDirIterator::Subdirectories);
     while (it.hasNext()) {
@@ -42,10 +44,19 @@ void Indexer::wait() {
 }
 
 Index Indexer::waitForIndex() {
-    wait();
+    if (threadPool->activeThreadCount() > 0)
+        wait();
     return index;
 }
 
 void Indexer::updateStatus() {
     emit statusUpdated("Indexing... " + QString::number(count.load()) + " done");
+}
+
+void Indexer::setRootPath(QString path) {
+    root = QDir(path);
+}
+
+Index Indexer::indexNonBlocking() {
+    return index;
 }

@@ -46,6 +46,7 @@ void MainWindow::openDialogClicked() {
 void MainWindow::indexerStatusUpdated(QString status, bool busy) {
     statusLabel->setText(status);
     searchField->setEnabled(!busy);
+    index = new Index(indexer->indexNonBlocking());
 }
 
 void MainWindow::searchCalled() {
@@ -105,4 +106,5 @@ MainWindow::~MainWindow() {
             searcher->wait();
         }
     }
+    delete index;
 }

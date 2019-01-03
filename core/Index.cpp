@@ -31,3 +31,8 @@ Index::FileHash Index::get(const QString &filePath) const {
 QList<QString> Index::filePaths() const {
     return map.keys();
 }
+
+Index &Index::operator=(const Index &other) {
+    this->map = other.map;
+    return *this;
+}

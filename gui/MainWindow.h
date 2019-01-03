@@ -31,6 +31,7 @@ private:
     friend class Watcher;
 
     QDir root;
+    Index *index = nullptr;
     Indexer *indexer = nullptr;
     Searcher *searcher = nullptr;
     Watcher *watcher = nullptr;
