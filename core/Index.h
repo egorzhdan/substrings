@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QHash>
 #include <QReadWriteLock>
+#include <QDir>
 
 class Index {
 public:
@@ -18,6 +19,7 @@ public:
     void insert(const QString& filePath, const Index::FileHash &fileHash);
     FileHash get(const QString& filePath) const;
     QList<QString> filePaths() const;
+    void removeUnderRoot(const QDir& root);
 
 private:
     mutable QReadWriteLock lock;

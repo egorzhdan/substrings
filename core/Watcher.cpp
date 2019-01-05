@@ -28,7 +28,7 @@ void Watcher::reindex(const QString &path) {
     } else {
         currentRoot = fileInfo.dir();
     }
-    par->indexer->waitForIndex();
+    par->indexer->setRootToReindex(currentRoot);
     par->indexer->start();
 }
 

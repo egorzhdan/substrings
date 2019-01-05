@@ -1,9 +1,10 @@
+#include <utility>
 #include <QSet>
 #include "Searcher.h"
 #include "FileIndexer.h"
 #include "FileSearcher.h"
 
-Searcher::Searcher(Index index, QString query, QObject *parent) : QThread(parent), index(index), query(query) {
+Searcher::Searcher(Index index, QString query, QObject *parent) : QThread(parent), index(index), query(std::move(query)) {
     threadPool = new QThreadPool(parent);
     threadPool->setMaxThreadCount(4);
 }

@@ -1,4 +1,5 @@
 #include <QMutexLocker>
+#include <QDebug>
 #include "Index.h"
 
 Index::Index() = default;
@@ -35,4 +36,16 @@ QList<QString> Index::filePaths() const {
 Index &Index::operator=(const Index &other) {
     this->map = other.map;
     return *this;
+}
+
+void Index::removeUnderRoot(const QDir &root) {
+    qDebug() << "Index: removing under " << root.absolutePath();
+    QMutableHashIterator it(map);
+    while (it.hasNext()) {
+        auto cur = it.next();
+        if (cur.key().startsWith(root.absolutePath())) {
+            qDebug() << "Index: removing " << cur.key();
+            it.remove();
+        }
+    }
 }
