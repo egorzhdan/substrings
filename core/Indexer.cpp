@@ -3,7 +3,7 @@
 #include "Indexer.h"
 #include "FileIndexer.h"
 
-Indexer::Indexer(QObject *parent, QDir root) : QThread(parent), root(root), rootToReindex(root) {
+Indexer::Indexer(QObject *parent, QDir root) : QThread(parent), root(root) {
     threadPool = new QThreadPool(parent);
     threadPool->setMaxThreadCount(4);
 }
@@ -16,7 +16,8 @@ void Indexer::run() {
     emit statusUpdated("Indexing...");
     count = 0;
 
-    auto it = QDirIterator(rootToReindex.path(), QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    auto rootPath = (shouldReindexFile ? filePathToReindex : root.absolutePath());
+    auto it = QDirIterator(rootPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
     while (it.hasNext()) {
         auto path = it.next();
         threadPool->start(new FileIndexer(this, path));
@@ -53,10 +54,10 @@ void Indexer::updateStatus() {
     emit statusUpdated("Indexing... " + QString::number(count.load()) + " done");
 }
 
-void Indexer::setRootToReindex(const QDir &root) {
-    index.removeUnderRoot(root);
-    rootToReindex = root;
-    rootToReindex.makeAbsolute();
+void Indexer::setRootToReindex(const QFile &root) {
+    shouldReindexFile = true;
+    index.removeFile(root);
+    filePathToReindex = root.fileName();
 }
 
 Index Indexer::indexNonBlocking() {

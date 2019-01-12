@@ -19,7 +19,7 @@ public:
     void insert(const QString& filePath, const Index::FileHash &fileHash);
     FileHash get(const QString& filePath) const;
     QList<QString> filePaths() const;
-    void removeUnderRoot(const QDir& root);
+    void removeFile(const QFile &root);
 
 private:
     mutable QReadWriteLock lock;

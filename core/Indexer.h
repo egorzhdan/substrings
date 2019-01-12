@@ -12,7 +12,7 @@ Q_OBJECT
 public:
     Indexer(QObject *parent, QDir root);
     QString rootPath();
-    void setRootToReindex(const QDir &root);
+    void setRootToReindex(const QFile &root);
     void cancel();
     void wait();
     Index waitForIndex();
@@ -28,7 +28,8 @@ private:
     friend class FileIndexer;
 
     QDir root;
-    QDir rootToReindex;
+    QString filePathToReindex;
+    bool shouldReindexFile = false;
     Index index;
     QThreadPool *threadPool;
     QAtomicInt count;

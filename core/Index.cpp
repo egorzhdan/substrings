@@ -38,12 +38,12 @@ Index &Index::operator=(const Index &other) {
     return *this;
 }
 
-void Index::removeUnderRoot(const QDir &root) {
-    qDebug() << "Index: removing under " << root.absolutePath();
+void Index::removeFile(const QFile &root) {
+    qDebug() << "Index: removing under " << root.fileName();
     QMutableHashIterator it(map);
     while (it.hasNext()) {
         auto cur = it.next();
-        if (cur.key().startsWith(root.absolutePath())) {
+        if (cur.key().startsWith(root.fileName())) {
             qDebug() << "Index: removing " << cur.key();
             it.remove();
         }

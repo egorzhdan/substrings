@@ -19,7 +19,6 @@ private:
     void reindex(const QString& path);
 
 private slots:
-    void directoryChanged(const QString &path);
     void fileChanged(const QString &path);
 };
 
