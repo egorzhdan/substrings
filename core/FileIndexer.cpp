@@ -59,7 +59,19 @@ Index::FileHash calcHash(const QString &filePath) {
         stream.setCodec("UTF-8");
         QString buffer;
         while (true) {
-            buffer.append(stream.read(4 << 20));
+            const QString &s = stream.read(1 << 20);
+            bool skip = false;
+            for (auto i : s) {
+                if (i == 0) {
+                    // probably binary
+                    qDebug() << "Initial indexing: skipping " << filePath;
+                    skip = true;
+                    break;
+                }
+            }
+            if (skip) break;
+
+            buffer.append(s);
             if (buffer.size() < 3) {
                 break;
             }
